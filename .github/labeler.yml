@@ -1,0 +1,35 @@
+# .github/labeler.yml
+# Add 'documentation' label to any PR that changes markdown files
+documentation:
+  - changed-files:
+    - any-glob-to-any-file: ['**/*.md']
+
+# Add 'frontend' label to any PR that changes files in the frontend directory
+frontend:
+  - changed-files:
+    - any-glob-to-any-file: ['frontend/**']
+
+# Add 'backend' label to any PR that changes files in the whales_be_service directory
+backend:
+  - changed-files:
+    - any-glob-to-any-file: ['whales_be_service/**']
+
+# Add 'mlcore' label to any PR that changes files in the whales_identify directory
+mlcore:
+  - changed-files:
+    - any-glob-to-any-file: ['whales_identify/**']
+
+# Add 'cicd' label to any PR that changes GitHub workflow or GitLab CI files
+cicd:
+  - changed-files:
+    - any-glob-to-any-file: ['.github/workflows/**', '.gitlab-ci.yml']
+
+# Add 'research' label for changes in research notebooks or scripts
+research:
+  - changed-files:
+    - any-glob-to-any-file: ['research/**', 'comparison_research/**']
+
+# Add 'infra' label for changes to Dockerfiles or docker-compose
+infrastructure:
+  - changed-files:
+    - any-glob-to-any-file: ['Dockerfile', 'docker-compose.yml', '**/Dockerfile']
