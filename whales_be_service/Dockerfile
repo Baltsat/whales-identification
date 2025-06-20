@@ -36,6 +36,8 @@ RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     libgl1-mesa-glx \
     curl \
+    gcc \
+    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # deps + uvicorn + дополнительные ML зависимости
@@ -51,7 +53,8 @@ RUN pip install --no-cache-dir \
     timm==1.0.9 \
     albumentations==1.4.18 \
     pillow==10.4.0 \
-    numpy==1.26.0
+    numpy==1.26.0 \
+    psutil==5.9.8
 
 # копируем исходники
 COPY src ./src

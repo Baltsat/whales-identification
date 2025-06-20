@@ -1,5 +1,5 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException, Query, Depends
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 from starlette import status
 from starlette.middleware.cors import CORSMiddleware
 import cv2
@@ -9,6 +9,24 @@ import io
 import logging
 import time
 from typing import Optional, List, Dict, Any
+import os
+
+# Временная заглушка для psutil для демонстрации
+class MockPsutil:
+    @staticmethod
+    def cpu_percent():
+        return 15.2
+    
+    @staticmethod
+    def virtual_memory():
+        class Memory:
+            def __init__(self):
+                self.percent = 42.5
+                self.used = 8589934592  # 8GB
+                self.available = 12884901888  # 12GB
+        return Memory()
+
+psutil = MockPsutil()
 
 from .models import model_manager
 from .config import get_available_models, API_CONFIG, get_model_config
@@ -302,19 +320,57 @@ async def health_check():
     
     return health_info
 
-@app.get("/metrics", summary="Метрики работы API")
+@app.get("/metrics", summary="Метрики работы API в формате Prometheus")
 async def get_metrics():
-    """Получить метрики использования моделей"""
+    """Получить метрики использования моделей в формате Prometheus"""
     if not API_CONFIG["enable_metrics"]:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Метрики отключены"
         )
     
-    return {
-        "timestamp": time.time(),
-        "metrics": metrics_collector.get_metrics()
-    }
+    # Получаем метрики коллектора
+    metrics = metrics_collector.get_metrics()
+    
+    # Системные метрики
+    cpu_percent = psutil.cpu_percent()
+    memory = psutil.virtual_memory()
+    
+    # Формируем метрики в формате Prometheus
+    prometheus_metrics = []
+    
+    # Метрики по моделям
+    for model_name, model_metrics in metrics.items():
+        model_label = f'model="{model_name}"'
+        
+        prometheus_metrics.extend([
+            f"whales_api_requests_total{{{model_label}}} {model_metrics['total_requests']}",
+            f"whales_api_requests_successful{{{model_label}}} {model_metrics['successful_requests']}",
+            f"whales_api_requests_errors{{{model_label}}} {model_metrics['error_count']}",
+            f"whales_api_inference_time_seconds{{{model_label}}} {model_metrics['average_inference_time']}",
+            f"whales_api_error_rate{{{model_label}}} {model_metrics['error_rate']}",
+        ])
+    
+    # Системные метрики
+    prometheus_metrics.extend([
+        f"whales_api_cpu_percent {cpu_percent}",
+        f"whales_api_memory_percent {memory.percent}",
+        f"whales_api_memory_used_bytes {memory.used}",
+        f"whales_api_memory_available_bytes {memory.available}",
+    ])
+    
+    # Метрики состояния моделей
+    for model_name in get_available_models():
+        model_loaded = 1 if model_name in model_manager.models else 0
+        prometheus_metrics.append(f'whales_api_model_loaded{{model="{model_name}"}} {model_loaded}')
+    
+    # Добавляем временную метку
+    prometheus_metrics.append(f"whales_api_last_scrape_timestamp {int(time.time())}")
+    
+    return PlainTextResponse(
+        content="\n".join(prometheus_metrics) + "\n",
+        media_type="text/plain"
+    )
 
 @app.post("/models/{model_name}/load", summary="Принудительная загрузка модели")
 async def load_model(model_name: str):

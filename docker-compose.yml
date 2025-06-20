@@ -111,12 +111,46 @@ services:
       - "9090:9090"
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alerting-rules.yml:/etc/prometheus/alerting-rules.yml:ro
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
       - '--web.console.libraries=/etc/prometheus/console_libraries'
       - '--web.console.templates=/etc/prometheus/consoles'
       - '--web.enable-lifecycle'
+      - '--alertmanager.notification-queue-capacity=1000'
+    networks:
+      - whale-net
+
+  # Alertmanager для управления алертами
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: whales-alertmanager
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+      - '--web.external-url=http://localhost:9093'
+    depends_on:
+      - telegram-notifier
+    networks:
+      - whale-net
+
+  # Telegram notifier для уведомлений
+  telegram-notifier:
+    build:
+      context: ./telegram-notifier
+      dockerfile: Dockerfile
+    container_name: whales-telegram-notifier
+    ports:
+      - "8085:8080"
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
+      - WEBHOOK_SECRET=webhook_secret
     networks:
       - whale-net
 

@@ -3,8 +3,13 @@ global:
   evaluation_interval: 15s
 
 rule_files:
-  # - "first_rules.yml"
-  # - "second_rules.yml"
+  - "alerting-rules.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
 
 scrape_configs:
   # Мониторинг самого Prometheus
@@ -12,7 +17,7 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  # Мониторинг API сервисов китов
+  # Мониторинг API сервисов китов - основные метрики
   - job_name: 'whales-api-efficientnet-v1'
     metrics_path: '/metrics'
     static_configs:
@@ -31,19 +36,15 @@ scrape_configs:
       - targets: ['api-resnet-v1:8000']
     scrape_interval: 10s
 
-  # Мониторинг nginx
-  - job_name: 'nginx'
+  # Мониторинг Alertmanager
+  - job_name: 'alertmanager'
     static_configs:
-      - targets: ['nginx:80']
-    metrics_path: '/metrics'
+      - targets: ['alertmanager:9093']
     scrape_interval: 30s
 
-  # Health checks для всех сервисов
-  - job_name: 'health-checks'
-    metrics_path: '/health'
+  # Мониторинг Telegram Bot
+  - job_name: 'telegram-notifier'
     static_configs:
-      - targets: 
-        - 'api-efficientnet-v1:8000'
-        - 'api-efficientnet-v2:8000'
-        - 'api-resnet-v1:8000'
+      - targets: ['telegram-notifier:8080']
+    metrics_path: '/metrics'
     scrape_interval: 30s 
