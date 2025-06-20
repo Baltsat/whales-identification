@@ -1,11 +1,10 @@
 [project]
 name = "whales-be-service"
 version = "0.1.0"
-description = ""
+description = "API service for whale identification"
 authors = [
     {name = "Tarasov Artyom",email = "almtara550@gmail.com"}
 ]
-readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi (>=0.115.12,<0.116.0)",
@@ -15,10 +14,10 @@ dependencies = [
 [tool.poetry]
 name = "whales-be-service"
 version = "0.1.0"
-description = ""
+description = "API service for whale identification"
 authors = ["Tarasov Artyom"]
 packages = [{include = "whales_be_service", from = "src"}]
-
+package-mode = false
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

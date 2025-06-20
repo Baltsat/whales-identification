@@ -33,3 +33,82 @@ research:
 infrastructure:
   - changed-files:
     - any-glob-to-any-file: ['Dockerfile', 'docker-compose.yml', '**/Dockerfile']
+
+# Configuration for GitHub Labeler
+# https://github.com/actions/labeler
+
+# API и Backend
+"api":
+  - changed-files:
+    - any-glob-to-any-file: 'whales_be_service/**/*'
+    - any-glob-to-any-file: '**/api/**/*'
+
+# Docker и инфраструктура  
+"docker":
+  - changed-files:
+    - any-glob-to-any-file: '**/Dockerfile*'
+    - any-glob-to-any-file: 'docker-compose*.yml'
+    - any-glob-to-any-file: '**/.dockerignore'
+
+# Конфигурация
+"config":
+  - changed-files:
+    - any-glob-to-any-file: '**/*config*.py'
+    - any-glob-to-any-file: '**/*config*.yml'
+    - any-glob-to-any-file: '**/*config*.yaml'
+    - any-glob-to-any-file: 'nginx.conf'
+
+# Скрипты
+"scripts":
+  - changed-files:
+    - any-glob-to-any-file: 'scripts/**/*'
+
+# Мониторинг
+"monitoring":
+  - changed-files:
+    - any-glob-to-any-file: 'monitoring/**/*'
+    - any-glob-to-any-file: '**/prometheus*.yml'
+    - any-glob-to-any-file: '**/grafana*'
+
+# Документация
+"documentation":
+  - changed-files:
+    - any-glob-to-any-file: '**/*.md'
+    - any-glob-to-any-file: '**/*.rst'
+    - any-glob-to-any-file: 'docs/**/*'
+
+# ML и исследования
+"research":
+  - changed-files:
+    - any-glob-to-any-file: 'research/**/*'
+    - any-glob-to-any-file: '**/*.ipynb'
+    - any-glob-to-any-file: '**/models/**/*'
+
+# Зависимости
+"dependencies":
+  - changed-files:
+    - any-glob-to-any-file: 'requirements*.txt'
+    - any-glob-to-any-file: 'pyproject.toml'
+    - any-glob-to-any-file: 'poetry.lock'
+    - any-glob-to-any-file: 'package*.json'
+
+# Тесты
+"tests":
+  - changed-files:
+    - any-glob-to-any-file: 'tests/**/*'
+    - any-glob-to-any-file: '**/*test*.py'
+    - any-glob-to-any-file: '**/test_*'
+
+# Frontend
+"frontend":
+  - changed-files:
+    - any-glob-to-any-file: 'frontend/**/*'
+    - any-glob-to-any-file: '**/*.tsx'
+    - any-glob-to-any-file: '**/*.ts'
+    - any-glob-to-any-file: '**/*.css'
+
+# CI/CD
+"ci":
+  - changed-files:
+    - any-glob-to-any-file: '.github/**/*'
+    - any-glob-to-any-file: '**/.github/**/*'

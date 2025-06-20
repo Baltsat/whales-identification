@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y \
 # ставим Poetry и экспортируем prod-зависимости
 RUN pip install --no-cache-dir poetry==1.8.2
 COPY pyproject.toml poetry.lock ./
+# Используем --no-root чтобы не устанавливать проект целиком
 RUN poetry config virtualenvs.create false \
  && poetry export --without-hashes -f requirements.txt -o requirements.txt
 

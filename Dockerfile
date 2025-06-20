@@ -14,7 +14,8 @@ RUN pip install poetry
 
 COPY pyproject.toml poetry.lock /app/
 
-RUN poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi --all-extras
+# Устанавливаем только зависимости без установки самого проекта
+RUN poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi --no-root
 
 COPY . /app/
 
