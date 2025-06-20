@@ -1,35 +1,68 @@
-# .github/labeler.yml
-# Add 'documentation' label to any PR that changes markdown files
+# Configuration for GitHub Labeler
+# https://github.com/actions/labeler
+
+# API и Backend
+api:
+  - changed-files:
+    - any-glob-to-any-file: 'whales_be_service/**/*'
+
+# Docker и инфраструктура  
+docker:
+  - changed-files:
+    - any-glob-to-any-file: '**/Dockerfile*'
+    - any-glob-to-any-file: 'docker-compose*.yml'
+
+# Конфигурация
+config:
+  - changed-files:
+    - any-glob-to-any-file: '**/*config*.py'
+    - any-glob-to-any-file: 'nginx.conf'
+
+# Скрипты
+scripts:
+  - changed-files:
+    - any-glob-to-any-file: 'scripts/**/*'
+
+# Мониторинг
+monitoring:
+  - changed-files:
+    - any-glob-to-any-file: 'monitoring/**/*'
+
+# Документация
 documentation:
   - changed-files:
-    - any-glob-to-any-file: ['**/*.md']
+    - any-glob-to-any-file: '**/*.md'
 
-# Add 'frontend' label to any PR that changes files in the frontend directory
-frontend:
-  - changed-files:
-    - any-glob-to-any-file: ['frontend/**']
-
-# Add 'backend' label to any PR that changes files in the whales_be_service directory
-backend:
-  - changed-files:
-    - any-glob-to-any-file: ['whales_be_service/**']
-
-# Add 'mlcore' label to any PR that changes files in the whales_identify directory
-mlcore:
-  - changed-files:
-    - any-glob-to-any-file: ['whales_identify/**']
-
-# Add 'cicd' label to any PR that changes GitHub workflow or GitLab CI files
-cicd:
-  - changed-files:
-    - any-glob-to-any-file: ['.github/workflows/**', '.gitlab-ci.yml']
-
-# Add 'research' label for changes in research notebooks or scripts
+# ML и исследования
 research:
   - changed-files:
-    - any-glob-to-any-file: ['research/**', 'comparison_research/**']
+    - any-glob-to-any-file: 'research/**/*'
+    - any-glob-to-any-file: 'comparison_research/**/*'
 
-# Add 'infra' label for changes to Dockerfiles or docker-compose
-infrastructure:
+# ML core библиотека
+mlcore:
   - changed-files:
-    - any-glob-to-any-file: ['Dockerfile', 'docker-compose.yml', '**/Dockerfile']
+    - any-glob-to-any-file: 'whales_identify/**/*'
+
+# Зависимости
+dependencies:
+  - changed-files:
+    - any-glob-to-any-file: 'requirements*.txt'
+    - any-glob-to-any-file: 'pyproject.toml'
+    - any-glob-to-any-file: 'poetry.lock'
+
+# Тесты
+tests:
+  - changed-files:
+    - any-glob-to-any-file: 'tests/**/*'
+    - any-glob-to-any-file: '**/*test*.py'
+
+# Frontend
+frontend:
+  - changed-files:
+    - any-glob-to-any-file: 'frontend/**/*'
+
+# CI/CD
+ci:
+  - changed-files:
+    - any-glob-to-any-file: '.github/**/*'
